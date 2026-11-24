@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karkhana Hisab</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f1f5f9;padding:12px}
+h1{text-align:center;color:#0f172a}
+.card{background:#fff;padding:14px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+input,select{width:100%;padding:11px;margin:6px 0;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+button{width:100%;padding:12px;background:#16a34a;color:#fff;border:0;border-radius:8px;font-size:17px;font-weight:bold}
+.total{font-size:22px;font-weight:bold;text-align:center;color:#16a34a}
+.item{background:#f8fafc;padding:10px;border-radius:10px;margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+.del{background:#ef4444;width:auto;padding:7px 12px;font-size:14px}
+small{color:#64748b}
+</style>
+</head>
+<body>
+<h1>Karkhana Hisab</h1>
+<div class="card">
+<div class="total">Total: Rs <span id="total">0</span></div>
+</div>
+<div class="card">
+<input id="name" placeholder="Karigar ka naam">
+<input id="kaam" placeholder="Kaam - jaise Cutting, Silai">
+<input id="paisa" type="number" placeholder="Paisa - Rs">
+<input id="tarikh" type="date">
+<button onclick="add()">+ Entry Add Karo</button>
+</div>
+<div class="card" id="list"></div>
+<script>
+let data = JSON.parse(localStorage.getItem('karkhana') || '[]');
+document.getElementById('tarikh').valueAsDate = new Date();
+function show(){
+let t=0; let h='';
+data.slice().reverse().forEach((x,i)=>{
+let idx = data.length-1-i;
+t+=Number(x.paisa);
+h+='<div class="item"><div><b>'+x.name+'</b><br><small>'+x.kaam+' | '+x.tarikh+'</small><br><b>Rs '+x.paisa+'</b></div><button class="del" onclick="del('+idx+')">Delete</button></div>';
+});
+document.getElementById('list').innerHTML = h || 'Koi entry nahi hai';
+document.getElementById('total').innerText = t;
+}
+function add(){
+let n=document.getElementById('name').value;
+let k=document.getElementById('kaam').value;
+let p=document.getElementById('paisa').value;
+let d=document.getElementById('tarikh').value;
+if(!n || !p){alert('Naam aur Paisa likho');return;}
+data.push({name:n,kaam:k,paisa:p,tarikh:d});
+localStorage.setItem('karkhana',JSON.stringify(data));
+document.getElementById('name').value='';
+document.getElementById('kaam').value='';
+document.getElementById('paisa').value='';
+show();
+}
+function del(i){data.splice(i,1);localStorage.setItem('karkhana',JSON.stringify(data));show();}
+show();
+</script>
+</body>
+</html>
